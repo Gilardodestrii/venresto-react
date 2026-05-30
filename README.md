@@ -40,6 +40,8 @@ resources/js/
 │   ├── AppLayout.jsx
 │   └── Sidebar.jsx
 └── pages/
+    ├── Landing.jsx
+    ├── Login.jsx
     ├── Dashboard.jsx
     ├── Pos.jsx
     ├── Inventory.jsx
@@ -50,17 +52,26 @@ resources/js/
 
 ## URL React
 
-React akan aktif di route:
+React akan aktif langsung tanpa prefix `/app`:
 
 ```text
-/app
-/app/dashboard
-/app/pos
-/app/inventory
-/app/kitchen
-/app/reports
-/app/settings
+/
+/login
+/dashboard
+/pos
+/inventory
+/kitchen
+/reports
+/settings
 ```
+
+Laravel tetap bisa menyediakan route API dengan prefix:
+
+```text
+/api/...
+```
+
+Jika ada route khusus backend, webhook, atau file download, route tersebut tetap didefinisikan di Laravel dan tidak perlu masuk React Router.
 
 ## Install Lokal
 
@@ -83,4 +94,4 @@ php artisan optimize
 
 ## Catatan
 
-Repo ini disiapkan sebagai fondasi awal Laravel + React. Fitur dari repo lama bisa dipindahkan bertahap ke API Laravel dan halaman React.
+Repo ini disiapkan sebagai fondasi awal Laravel + React tanpa prefix `/app`. Fitur dari repo lama bisa dipindahkan bertahap ke API Laravel dan halaman React.
