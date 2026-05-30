@@ -17,12 +17,13 @@ Laravel tetap menjadi backend utama untuk:
 - Inventory
 - Kitchen Display
 - Reports
+- Tenant slug routing seperti repo lama
 
 React berada di dalam Laravel pada folder `resources/js` dan dirender melalui Blade `resources/views/app.blade.php`.
 
 ```text
 Browser
-  -> Laravel route
+  -> Laravel route dengan tenant slug
   -> resources/views/app.blade.php
   -> React app di resources/js
   -> API Laravel
@@ -50,28 +51,49 @@ resources/js/
     └── Settings.jsx
 ```
 
-## URL React
+## URL React dengan Tenant Slug
 
-React akan aktif langsung tanpa prefix `/app`:
+React admin mengikuti pola route repo lama dengan tenant slug:
 
 ```text
 /
 /login
-/dashboard
-/pos
-/inventory
-/kitchen
-/reports
-/settings
+/signup
+/{tenant}/login
+/{tenant}/admin/dashboard
+/{tenant}/admin/pos
+/{tenant}/admin/inventory
+/{tenant}/admin/kitchen
+/{tenant}/admin/reports
+/{tenant}/admin/settings
+/{tenant}/admin/roles
 ```
 
-Laravel tetap bisa menyediakan route API dengan prefix:
+QR menu tetap bisa menggunakan pola tenant juga:
 
 ```text
-/api/...
+/{tenant}/qr/{table}
 ```
 
-Jika ada route khusus backend, webhook, atau file download, route tersebut tetap didefinisikan di Laravel dan tidak perlu masuk React Router.
+Laravel tetap menyediakan route API dengan prefix tenant jika diperlukan:
+
+```text
+/api/{tenant}/...
+```
+
+Jika ada route khusus backend seperti webhook Midtrans, QR download, atau aksi submit form, route tersebut tetap didefinisikan di Laravel dan tidak perlu masuk React Router.
+
+## Contoh Catch-all Route Laravel untuk React Admin
+
+```php
+Route::middleware(['auth'])->group(function () {
+    Route::get('/{tenant}/admin/{any?}', function (string $tenant) {
+        return view('app', [
+            'tenant' => $tenant,
+        ]);
+    })->where('any', '.*')->name('tenant.admin.react');
+});
+```
 
 ## Install Lokal
 
@@ -94,4 +116,4 @@ php artisan optimize
 
 ## Catatan
 
-Repo ini disiapkan sebagai fondasi awal Laravel + React tanpa prefix `/app`. Fitur dari repo lama bisa dipindahkan bertahap ke API Laravel dan halaman React.
+Repo ini disiapkan sebagai fondasi awal Laravel + React dengan route tenant slug seperti repo lama. Fitur dari repo lama bisa dipindahkan bertahap ke API Laravel dan halaman React.
